@@ -13,7 +13,6 @@ class CustomUserAdmin(admin.ModelAdmin):
         "email",
         "first_name",
         "last_name",)
-    list_editable = ("username",)
     list_filter = ("username", "email",)
     search_fields = ("username", "email",)
 
