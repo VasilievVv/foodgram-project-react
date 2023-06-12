@@ -20,14 +20,14 @@ class MyUserManager(UserManager):
             **extra_fields
         )
 
-    def create_superuser(self, email, username, password=None, **extra_fields):
+    def create_superuser(self, username, email, password=None, **extra_fields):
         """
         Создает суперюзера.
         """
         extra_fields.setdefault('role', 'admin')
         return super().create_superuser(
-            email,
             username,
+            email,
             password,
             **extra_fields
         )
@@ -89,3 +89,35 @@ class User(AbstractUser):
     @property
     def is_admin(self):
         return self.role == self.ADMIN
+
+
+# class Follow(models.Model):
+#     """Модель подписок."""
+#
+#     user = models.ForeignKey(
+#         User,
+#         related_name='follower',
+#         on_delete=models.CASCADE,
+#     )
+#     following = models.ForeignKey(
+#         User,
+#         on_delete=models.CASCADE,
+#         related_name='following',
+#     )
+#
+#     class Meta:
+#         constraints = [
+#             models.UniqueConstraint(
+#                 fields=['user', 'following'],
+#                 name='unique_follow'),
+#             models.CheckConstraint(
+#                 check=~models.Q(following=models.F('user')),
+#                 name='cant_subscribe_yourself'
+#             ),
+#         ]
+#         verbose_name = 'Подписка'
+#         verbose_name_plural = 'Подписки'
+#
+#     def __str__(self):
+#         text = f"Подписка пользователя {self.user} на автора {self.following}"
+#         return text

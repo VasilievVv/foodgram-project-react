@@ -44,3 +44,20 @@ class UserDetailView(APIView):
         user = User.objects.get(id=pk,)
         serializer = UsersMeSerializer(user)
         return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+# class FollowViewSet(mixins.CreateModelMixin,
+#                     mixins.ListModelMixin,
+#                     viewsets.GenericViewSet
+#                     ):
+#     serializer_class = FollowSerializer
+#     search_fields = ('user__username', 'following__username')
+#
+#     def get_user(self):
+#         return self.request.user
+#
+#     def get_queryset(self):
+#         return self.get_user().follower.all()
+#
+#     def perform_create(self, serializer):
+#         serializer.save(user=self.get_user())
