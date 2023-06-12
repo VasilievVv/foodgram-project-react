@@ -21,7 +21,7 @@ class UserAdmin(UserAdmin):
         'last_name',
     )
     list_filter = ('username', 'email',)
-    search_fields = ('username__startswith', 'email',)
+    search_fields = ('username', 'email',)
     ordering = ('id',)
     empty_value_display = '-пусто-'
 

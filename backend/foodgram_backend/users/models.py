@@ -20,14 +20,14 @@ class MyUserManager(UserManager):
             **extra_fields
         )
 
-    def create_superuser(self, username, email, password=None, **extra_fields):
+    def create_superuser(self, email, username, password=None, **extra_fields):
         """
         Создает суперюзера.
         """
         extra_fields.setdefault('role', 'admin')
         return super().create_superuser(
-            username,
             email,
+            username,
             password,
             **extra_fields
         )
@@ -45,8 +45,6 @@ class User(AbstractUser):
         (USER, USER),
         (ADMIN, ADMIN),
     )
-    USERNAME_FIELD = 'email'
-    REQUIRED_FIELDS = ['username', 'password', 'first_name', 'last_name']
 
     username = models.CharField(
         'пользователь',
@@ -68,7 +66,8 @@ class User(AbstractUser):
         default='user',
     )
 
-    REQUIRED_FIELDS = ['password', ]
+    USERNAME_FIELD = 'email'
+    REQUIRED_FIELDS = ['username', 'password', 'first_name', 'last_name', ]
 
     objects = MyUserManager()
 
