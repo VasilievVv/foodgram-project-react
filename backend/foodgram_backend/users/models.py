@@ -91,33 +91,32 @@ class User(AbstractUser):
         return self.role == self.ADMIN
 
 
-# class Follow(models.Model):
-#     """Модель подписок."""
-#
-#     user = models.ForeignKey(
-#         User,
-#         related_name='follower',
-#         on_delete=models.CASCADE,
-#     )
-#     following = models.ForeignKey(
-#         User,
-#         on_delete=models.CASCADE,
-#         related_name='following',
-#     )
-#
-#     class Meta:
-#         constraints = [
-#             models.UniqueConstraint(
-#                 fields=['user', 'following'],
-#                 name='unique_follow'),
-#             models.CheckConstraint(
-#                 check=~models.Q(following=models.F('user')),
-#                 name='cant_subscribe_yourself'
-#             ),
-#         ]
-#         verbose_name = 'Подписка'
-#         verbose_name_plural = 'Подписки'
-#
-#     def __str__(self):
-#         text = f"Подписка пользователя {self.user} на автора {self.following}"
-#         return text
+class Follow(models.Model):
+    """Модель подписок."""
+
+    user = models.ForeignKey(
+        User,
+        related_name='follower',
+        on_delete=models.CASCADE,
+    )
+    is_subscribed = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        related_name='is_subscribed',
+    )
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                fields=['user', 'is_subscribed'],
+                name='unique_is_subscribed'),
+            models.CheckConstraint(
+                check=~models.Q(is_subscribed=models.F('user')),
+                name='cant_subscribe_yourself'
+            ),
+        ]
+        verbose_name = 'Подписка'
+        verbose_name_plural = 'Подписки'
+
+    def __str__(self):
+        return f"Подписка пользователя {self.user} на автора {self.is_subscribed}"

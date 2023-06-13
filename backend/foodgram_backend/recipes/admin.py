@@ -1,5 +1,6 @@
 from django.contrib import admin
 
+
 from .models import Tag, Ingredient, Recipe
 
 
@@ -25,4 +26,5 @@ class IngredientAdmin(admin.ModelAdmin):
 class RecipeAdmin(admin.ModelAdmin):
     """Описываем модель Рецепта в админке."""
 
+    list_display = ('name', 'author')
     empty_value_display = '-пусто-'

@@ -2,7 +2,7 @@ from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 from django.contrib.auth.models import Group
 
-from .models import User
+from .models import User, Follow
 
 
 @admin.register(User)
@@ -26,4 +26,5 @@ class UserAdmin(UserAdmin):
     empty_value_display = '-пусто-'
 
 
+admin.site.register(Follow)
 admin.site.unregister(Group)
