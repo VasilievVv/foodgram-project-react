@@ -45,12 +45,6 @@ class UsersMeSerializer(serializers.ModelSerializer):
             'last_name',
         )
 
-
-# class SetPasswordSerializer(serializers.Serializer):
-#     """Сериализатор смены пароля на ендпоинте -
-#     POST /api/users/set-password/."""
-
-
 # class FollowSerializer(serializers.ModelSerializer):
 #     """"Сериализатор выаода инфы о подписке"""
 #

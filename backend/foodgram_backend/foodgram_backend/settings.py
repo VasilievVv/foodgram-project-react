@@ -101,3 +101,25 @@ USE_TZ = True
 STATIC_URL = 'static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+DJOSER = {
+    'HIDE_USERS': False,
+    'ACTIVATION_URL': False,
+    'LOGIN_FIELD': 'email',
+    'SERIALIZERS': {
+        'set_password': 'djoser.serializers.SetPasswordSerializer',
+        'user_create': 'djoser.serializers.UserCreateSerializer',
+        'user': 'users.serializers.UsersMeSerializer',
+        'current_user': 'users.serializers.UsersMeSerializer',
+        'token': 'djoser.serializers.TokenSerializer',
+        'token_create': 'djoser.serializers.TokenCreateSerializer',
+    },
+    'PERMISSIONS': {
+        'set_password': ['rest_framework.permissions.IsAuthenticated'],
+        'user_create': ['rest_framework.permissions.AllowAny'],
+        'user_list': ['rest_framework.permissions.AllowAny'],
+        'token_create': ['rest_framework.permissions.AllowAny'],
+        'token_destroy': ['rest_framework.permissions.IsAuthenticated'],
+    },
+}
+
