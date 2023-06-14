@@ -111,8 +111,8 @@ DJOSER = {
     'SERIALIZERS': {
         'set_password': 'djoser.serializers.SetPasswordSerializer',
         'user_create': 'djoser.serializers.UserCreateSerializer',
-        'user': 'users.serializers.UsersMeSerializer',
-        'current_user': 'users.serializers.UsersMeSerializer',
+        'user': 'users.serializers.UsersSerializer',
+        'current_user': 'users.serializers.UsersSerializer',
         'token': 'djoser.serializers.TokenSerializer',
         'token_create': 'djoser.serializers.TokenCreateSerializer',
     },

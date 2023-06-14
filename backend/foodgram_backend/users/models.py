@@ -99,19 +99,19 @@ class Follow(models.Model):
         related_name='follower',
         on_delete=models.CASCADE,
     )
-    is_subscribed = models.ForeignKey(
+    following = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
-        related_name='is_subscribed',
+        related_name='following',
     )
 
     class Meta:
         constraints = [
             models.UniqueConstraint(
-                fields=['user', 'is_subscribed'],
-                name='unique_is_subscribed'),
+                fields=['user', 'following'],
+                name='unique_following'),
             models.CheckConstraint(
-                check=~models.Q(is_subscribed=models.F('user')),
+                check=~models.Q(following=models.F('user')),
                 name='cant_subscribe_yourself'
             ),
         ]
@@ -119,4 +119,4 @@ class Follow(models.Model):
         verbose_name_plural = 'Подписки'
 
     def __str__(self):
-        return f"Подписка пользователя {self.user} на автора {self.is_subscribed}"
+        return f"Подписка пользователя {self.user} на автора {self.following}"
