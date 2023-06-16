@@ -20,7 +20,15 @@ class IngredientSerializer(ModelSerializer):
 
 
 class FavoriteSerializer(ModelSerializer):
-    """Сериализватор для Избранного."""
+    """Сериализатор для Избранного."""
+
+    class Meta:
+        model = Recipe
+        fields = ('id', 'name', 'cooking_time') # 'image' добавить
+
+
+class ShoppingCartSerializer(ModelSerializer):
+    """Сериализатор для Списка покупок."""
 
     class Meta:
         model = Recipe
