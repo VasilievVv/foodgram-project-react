@@ -34,5 +34,5 @@ class FollowCreateView(views.APIView):
 
     def delete(self, request, pk):
         following = get_object_or_404(User, id=pk)
-        Follow.objects.delete(users=request.user, following=following)
+        get_object_or_404(Follow, user=request.user, following=following).delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
