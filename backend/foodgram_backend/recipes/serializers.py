@@ -1,6 +1,6 @@
 from rest_framework.serializers import ModelSerializer
 
-from .models import Tag, Ingredient
+from .models import Tag, Ingredient, Recipe
 
 
 class TagSerializer(ModelSerializer):
@@ -17,3 +17,11 @@ class IngredientSerializer(ModelSerializer):
     class Meta:
         model = Ingredient
         fields = ('id', 'name', 'measurement_unit', )
+
+
+class FavoriteSerializer(ModelSerializer):
+    """Сериализватор для Избранного."""
+
+    class Meta:
+        model = Recipe
+        fields = ('id', 'name', 'cooking_time') # 'image' добавить

@@ -1,7 +1,7 @@
 from django.contrib import admin
 
 
-from .models import Tag, Ingredient, Recipe
+from .models import Tag, Ingredient, Recipe, Favorite
 
 
 @admin.register(Tag)
@@ -26,5 +26,13 @@ class IngredientAdmin(admin.ModelAdmin):
 class RecipeAdmin(admin.ModelAdmin):
     """Описываем модель Рецепта в админке."""
 
-    list_display = ('name', 'author')
+    list_display = ('id', 'name', 'author')
+    empty_value_display = '-пусто-'
+
+
+@admin.register(Favorite)
+class FavoriteAdmin(admin.ModelAdmin):
+    """Описываем модель Избранного в админке."""
+
+    list_display = ('id', 'recipe', 'user')
     empty_value_display = '-пусто-'

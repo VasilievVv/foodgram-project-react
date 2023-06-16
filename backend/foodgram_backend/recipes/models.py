@@ -93,3 +93,27 @@ class Recipe(models.Model):
         default=1,
         validators=[MinValueValidator(1)],
     )
+
+
+class Favorite(models.Model):
+    """Класс описания модели Избранного."""
+
+    recipe = models.ForeignKey(
+        Recipe,
+        on_delete=models.CASCADE,
+        related_name='favorite_recipe',
+        verbose_name='понравившийся рецепт',
+    )
+    user = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        related_name='favorite_user',
+        verbose_name='добавил в избранное',
+    )
+
+    class Meta:
+        verbose_name = 'рецепт в избранном'
+        verbose_name_plural = 'рецепты в избранном'
+
+    def __str__(self):
+        return f'Пользователю {self.user} понравился рецепт {self.recipe}'
