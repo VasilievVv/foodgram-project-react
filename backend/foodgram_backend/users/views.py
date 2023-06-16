@@ -1,60 +1,38 @@
 from django.contrib.auth import get_user_model
 from django.shortcuts import get_object_or_404
 
-from rest_framework import viewsets, mixins, status
-from rest_framework.decorators import action
+from rest_framework import status, views
 from rest_framework.response import Response
 
 from .models import Follow
-from .serializers import FollowSerializer
+from .serializers import FollowListSerializer
 
 User = get_user_model()
 
 
-class FollowViewSet(mixins.CreateModelMixin,
-                    mixins.ListModelMixin,
-                    mixins.DestroyModelMixin,
-                    viewsets.GenericViewSet
-                    ):
-    """./"""
+class FollowlistView(views.APIView):
 
-    queryset = Follow.objects.all()
-    # def get_user(self):
-    #     return self.request.user
-    #
-    # def get_queryset(self):
-    #     return self.get_user().follower.all()
-
-    @action(methods=['get'],
-            detail=False, )
-    def subscriptions(self, request):
-        """../"""
-
-        queryset = self.request.user.follower.all()
-        serializer = FollowSerializer(queryset, many=True,)
+    def get(self, request):
+        following = User.objects.filter(following__user=self.request.user)
+        serializer = FollowListSerializer(following,
+                                          many=True,
+                                          context={'request': request})
         return Response(serializer.data, status=status.HTTP_200_OK)
 
-    @action(methods=['post', 'DELETE'], detail=True)
-    def subscribe(self, request, pk):
-        """../"""
 
-        author = get_object_or_404(User, id=pk)
-        if request.method == 'POST':
-            serializer = FollowSerializer(author, data=request.data)
-            if serializer.is_valid():
-                serializer.save()
-                return Response(serializer.data,
-                                status=status.HTTP_201_CREATED)
-            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+class FollowCreateView(views.APIView):
+    """./"""
 
-        if request.method == 'DELETE':
-            pass
+    def post(self, request, pk):
+        following = get_object_or_404(User, id=pk)
+        serializer = FollowListSerializer(following, data=request.data)
+        if serializer.is_valid():
+            Follow.objects.create(user=request.user, following=following)
+            return Response(serializer.data,
+                            status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-
-    # serializer_class = FollowSerializer
-    # search_fields = ('user__username', 'is_subscribed__username')
-
-
-    #
-    # def perform_create(self, serializer):
-    #     serializer.save(user=self.get_user())
+    def delete(self, request, pk):
+        following = get_object_or_404(User, id=pk)
+        Follow.objects.delete(users=request.user, following=following)
+        return Response(status=status.HTTP_204_NO_CONTENT)
