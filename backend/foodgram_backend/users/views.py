@@ -1,8 +1,7 @@
 from django.contrib.auth import get_user_model
 from django.shortcuts import get_object_or_404
 
-from rest_framework import status, views, generics
-from rest_framework.decorators import action
+from rest_framework import status, generics
 from rest_framework.response import Response
 
 from .models import Follow

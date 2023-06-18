@@ -5,7 +5,8 @@ from rest_framework.response import Response
 
 from .models import Tag, Ingredient, Favorite, Recipe, ShoppingCart
 from .serializers import (TagSerializer, IngredientSerializer,
-                          FavoriteSerializer, ShoppingCartSerializer, RecipeListSerializer)
+                          FavoriteSerializer, ShoppingCartSerializer,
+                          RecipeListSerializer, RecipeCreateSerializer)
 
 User = get_user_model()
 
@@ -24,14 +25,16 @@ class IngredientViewSet(viewsets.ReadOnlyModelViewSet):
     serializer_class = IngredientSerializer
 
 
-class FavoreteView(views.APIView):
+class FavoriteView(generics.CreateAPIView,
+                   generics.DestroyAPIView):
     """./"""
 
     def post(self, request, pk):
-        # такая реализация дает возможность создавать одинаковые записи, нужна валидация
         recipe = get_object_or_404(Recipe, id=pk)
         serializer = FavoriteSerializer(recipe, data=request.data)
         if serializer.is_valid():
+            if Favorite.objects.filter(user=request.user, recipe=recipe):
+                return Response(status=status.HTTP_400_BAD_REQUEST)
             Favorite.objects.create(recipe=recipe, user=request.user)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
@@ -62,9 +65,19 @@ class ShoppingCartView(views.APIView):
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 
-
 class RecipeListCreateView(generics.ListCreateAPIView):
     """././"""
+
+    queryset = Recipe.objects.all()
+    serializer_class = RecipeListSerializer
+
+    def get_serializer_class(self):
+        if self.request.method == 'POST':
+            return RecipeCreateSerializer
+
+
+class RecipeDetailView(generics.RetrieveUpdateDestroyAPIView):
+    """././."""
 
     queryset = Recipe.objects.all()
     serializer_class = RecipeListSerializer
