@@ -1,11 +1,11 @@
 from django.contrib.auth import get_user_model
 from django.shortcuts import get_object_or_404
-from rest_framework import viewsets, views, status
+from rest_framework import viewsets, views, status, generics
 from rest_framework.response import Response
 
 from .models import Tag, Ingredient, Favorite, Recipe, ShoppingCart
 from .serializers import (TagSerializer, IngredientSerializer,
-                          FavoriteSerializer, ShoppingCartSerializer)
+                          FavoriteSerializer, ShoppingCartSerializer, RecipeListSerializer)
 
 User = get_user_model()
 
@@ -45,6 +45,9 @@ class FavoreteView(views.APIView):
 class ShoppingCartView(views.APIView):
     """./"""
 
+    def get(self, request):
+        pass
+
     def post(self, request, pk):
         recipe = get_object_or_404(Recipe, id=pk)
         serializer = ShoppingCartSerializer(recipe, data=request.data)
@@ -57,3 +60,11 @@ class ShoppingCartView(views.APIView):
         recipe = get_object_or_404(Recipe, id=pk)
         get_object_or_404(ShoppingCart, user=request.user, recipe=recipe).delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+
+class RecipeListCreateView(generics.ListCreateAPIView):
+    """././"""
+
+    queryset = Recipe.objects.all()
+    serializer_class = RecipeListSerializer
