@@ -41,12 +41,17 @@ class FollowRecipeSerializer(serializers.ModelSerializer):
         model = Recipe
         fields = ('id', 'name', 'cooking_time', ) #image добавить
 
-class FollowListSerializer(serializers.ModelSerializer):
-    """"Сериализатор выаода инфы о подписке."""
+
+class FollowSerializer(serializers.ModelSerializer):
+    """"Сериализатор вывода инфы о подписке и создания подкиски."""
 
     is_subscribed = serializers.SerializerMethodField()
     recipes = FollowRecipeSerializer(read_only=True, many=True)
     recipes_count = serializers.SerializerMethodField()
+    email = serializers.CharField(required=False)
+    username = serializers.CharField(required=False)
+    first_name = serializers.CharField(required=False)
+    last_name = serializers.CharField(required=False)
 
     class Meta:
         model = User
@@ -61,10 +66,19 @@ class FollowListSerializer(serializers.ModelSerializer):
             'recipes_count',
         )
 
+    def validate(self, value):
+        """Проверяем, что не подписываемся на самого себя."""
+
+        request = self.context.get('request')
+        author = request.user
+        if author != value:
+            return value
+        raise serializers.ValidationError("Нельзя подписаться на самого себя")
+
     def get_is_subscribed(self, value):
         return True
 
     def get_recipes_count(self, value):
         request = self.context.get('request')
         author = request.user
-        author.recipes.count() #NULL ?
+        return author.recipes.count()
