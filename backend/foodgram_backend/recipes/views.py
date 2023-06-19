@@ -81,3 +81,11 @@ class RecipeDetailView(generics.RetrieveUpdateDestroyAPIView):
 
     queryset = Recipe.objects.all()
     serializer_class = RecipeListSerializer
+
+    def get_serializer_class(self):
+        if self.request.method == 'PATCH':
+            return RecipeCreateSerializer
+
+    # def delete(self, request, pk):
+    #     get_object_or_404(Recipe, author=request.user, id=pk).delete()
+    #     return Response(status=status.HTTP_204_NO_CONTENT)

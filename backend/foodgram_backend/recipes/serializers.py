@@ -46,6 +46,8 @@ class FavoriteSerializer(serializers.ModelSerializer):
 class ShoppingCartSerializer(serializers.ModelSerializer):
     """Сериализатор для Списка покупок."""
 
+    name = serializers.CharField(required=False)
+
     class Meta:
         model = Recipe
         fields = ('id', 'name', 'cooking_time') # 'image' добавить
@@ -113,4 +115,7 @@ class RecipeCreateSerializer(serializers.ModelSerializer):
                 amount=value.get('amount')
             )
         return recipe
+
+    def update(self, instance, validated_data):
+        pass
 
