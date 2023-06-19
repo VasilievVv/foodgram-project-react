@@ -41,15 +41,15 @@ class Ingredient(models.Model):
         'Название',
         max_length=70,
     )
-    amount = models.PositiveSmallIntegerField(
-        'количество',
-        default=1,
-        validators=[MinValueValidator(1)],
-    )
     measurement_unit = models.CharField(
         'Единица измерения',
         max_length=50,
     )
+    # amount = models.PositiveSmallIntegerField(
+    #     'количество',
+    #     default=1,
+    #     validators=[MinValueValidator(1)],
+    # )
 
     class Meta:
         verbose_name = 'Ингридиент'
@@ -82,6 +82,8 @@ class Recipe(models.Model):
     )
     ingredients = models.ManyToManyField(
         Ingredient,
+        through='RecipeIngredients',
+        through_fields=('recipe', 'ingredient'),
         verbose_name='Ингредиенты',
     )
     tags = models.ManyToManyField(
@@ -90,6 +92,27 @@ class Recipe(models.Model):
     )
     cooking_time = models.PositiveSmallIntegerField(
         'Время приготовления, мин',
+        default=1,
+        validators=[MinValueValidator(1)],
+    )
+
+
+class RecipeIngredients(models.Model):
+    """Доп таблица для ингридиентов в рецепте"""
+
+    ingredient = models.ForeignKey(
+        Ingredient,
+        on_delete=models.CASCADE,
+        verbose_name='ингредиент',
+    )
+    recipe = models.ForeignKey(
+        Recipe,
+        on_delete=models.CASCADE,
+        related_name='recipe_ingredients',
+        verbose_name='рецепт',
+    )
+    amount = models.PositiveSmallIntegerField(
+        'количество',
         default=1,
         validators=[MinValueValidator(1)],
     )

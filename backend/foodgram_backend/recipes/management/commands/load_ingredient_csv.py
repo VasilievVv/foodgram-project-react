@@ -26,6 +26,3 @@ class Command(BaseCommand):
                     measurement_unit=measurement_unit
                 )
         self.stdout.write('Загрузка завершена!')
-
-
-

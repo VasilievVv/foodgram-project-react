@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import Tag, Ingredient, Recipe, Favorite, ShoppingCart
+from .models import Tag, Ingredient, Recipe, Favorite, ShoppingCart, RecipeIngredients
 
 
 @admin.register(Tag)
@@ -16,16 +16,22 @@ class TagAdmin(admin.ModelAdmin):
 class IngredientAdmin(admin.ModelAdmin):
     """Описываем модель Ингридиента в админке."""
 
-    list_display = ('id', 'name', 'amount', 'measurement_unit',)
-    list_editable = ('name', 'amount', 'measurement_unit',)
+    list_display = ('id', 'name', 'measurement_unit', )
+    list_editable = ('name', 'measurement_unit',)
     empty_value_display = '-пусто-'
+
+
+@admin.register(RecipeIngredients)
+class RecipeIngredientAdmin(admin.ModelAdmin):
+    list_display = ('pk', 'recipe', 'ingredient', 'amount')
+    list_editable = ('recipe', 'ingredient',)
 
 
 @admin.register(Recipe)
 class RecipeAdmin(admin.ModelAdmin):
     """Описываем модель Рецепта в админке."""
 
-    list_display = ('id', 'name', 'author')
+    list_display = ('id', 'name', 'author', )
     empty_value_display = '-пусто-'
 
 
