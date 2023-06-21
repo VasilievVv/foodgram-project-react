@@ -1,9 +1,12 @@
 from django.contrib.auth import get_user_model
+from django.db.models import Sum
+from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
 from rest_framework import viewsets, views, status, generics
+from rest_framework.decorators import action
 from rest_framework.response import Response
 
-from .models import Tag, Ingredient, Favorite, Recipe, ShoppingCart
+from .models import Tag, Ingredient, Favorite, Recipe, ShoppingCart, RecipeIngredients
 from .serializers import (TagSerializer, IngredientSerializer,
                           FavoriteSerializer, ShoppingCartSerializer,
                           RecipeListSerializer, RecipeCreateSerializer)
@@ -47,9 +50,15 @@ class FavoriteView(generics.CreateAPIView,
 
 class ShoppingCartView(views.APIView):
     """./"""
-
+    @action(detail=False, url_path='download_shopping_cart')
     def get(self, request):
-        pass
+        user = request.user
+        recipes_in_cart = RecipeIngredients.objects.filter(
+            recipe__cart_recipe__user=user)
+        ingredients = recipes_in_cart.values(
+            'ingredient__name',
+            'ingredient__measurement_unit') # как добаввить количество7
+
 
     def post(self, request, pk):
         recipe = get_object_or_404(Recipe, id=pk)
@@ -86,6 +95,3 @@ class RecipeDetailView(generics.RetrieveUpdateDestroyAPIView):
         if self.request.method == 'PATCH':
             return RecipeCreateSerializer
 
-    # def delete(self, request, pk):
-    #     get_object_or_404(Recipe, author=request.user, id=pk).delete()
-    #     return Response(status=status.HTTP_204_NO_CONTENT)

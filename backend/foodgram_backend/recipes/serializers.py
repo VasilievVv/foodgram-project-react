@@ -117,5 +117,20 @@ class RecipeCreateSerializer(serializers.ModelSerializer):
         return recipe
 
     def update(self, instance, validated_data):
-        pass
+        # author = self.context['request'].user
+        recipe = instance
+        if 'tags' in validated_data:
+            tags = validated_data.pop('tags')
+            recipe.tags.all().delete() # удаляет тег вообще!
+            recipe.tags.set(tags)
+        if 'ingredients' in validated_data:
+            ingredients_value = validated_data.pop('ingredients')
+            recipe.recipe_ingredients.all().delete()
 
+            for value in ingredients_value:
+                RecipeIngredients.objects.create(
+                    recipe=recipe,
+                    ingredient=value.get('id'),
+                    amount=value.get('amount')
+                )
+        return recipe # не все даанные обновляются
