@@ -31,7 +31,7 @@ class RecipeIngredientAdmin(admin.ModelAdmin):
 class RecipeAdmin(admin.ModelAdmin):
     """Описываем модель Рецепта в админке."""
 
-    list_display = ('id', 'name', 'author', )
+    list_display = ('id', 'name', 'image', 'author', )
     empty_value_display = '-пусто-'
 
 

@@ -45,11 +45,6 @@ class Ingredient(models.Model):
         'Единица измерения',
         max_length=50,
     )
-    # amount = models.PositiveSmallIntegerField(
-    #     'количество',
-    #     default=1,
-    #     validators=[MinValueValidator(1)],
-    # )
 
     class Meta:
         verbose_name = 'Ингридиент'
@@ -72,11 +67,11 @@ class Recipe(models.Model):
         'Название',
         max_length=200,
     )
-    # image = models.ImageField(
-    #     'Картинка',
-    #     upload_to='recipes/',
-    #     blank=True,
-    # )
+    image = models.ImageField(
+        'Картинка',
+        upload_to='recipes/',
+        blank=True,
+    )
     text = models.TextField(
         'Описание',
     )

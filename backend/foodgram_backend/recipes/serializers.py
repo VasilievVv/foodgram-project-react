@@ -1,9 +1,23 @@
+import base64
+
 from rest_framework import serializers
+from django.core.files.base import ContentFile
+
 
 from .models import Tag, Ingredient, Recipe, RecipeIngredients, Favorite, ShoppingCart
 
 from users.serializers import UsersSerializer
 
+
+class Base64ImageField(serializers.ImageField):
+    """Сериализатор для изображений."""
+
+    def to_internal_value(self, data):
+        if isinstance(data, str) and data.startswith('data:image'):
+            format, imgstr = data.split(';base64,')
+            ext = format.split('/')[-1]
+            data = ContentFile(base64.b64decode(imgstr), name='image.' + ext)
+        return super().to_internal_value(data)
 
 class TagSerializer(serializers.ModelSerializer):
     """Сериализатор для Tag."""
@@ -37,20 +51,22 @@ class FavoriteSerializer(serializers.ModelSerializer):
     """Сериализатор для Избранного."""
 
     name = serializers.CharField(required=False)
+    image = Base64ImageField()
 
     class Meta:
         model = Recipe
-        fields = ('id', 'name', 'cooking_time') # 'image' добавить
+        fields = ('id', 'name', 'image', 'cooking_time', )
 
 
 class ShoppingCartSerializer(serializers.ModelSerializer):
     """Сериализатор для Списка покупок."""
 
     name = serializers.CharField(required=False)
+    image = Base64ImageField()
 
     class Meta:
         model = Recipe
-        fields = ('id', 'name', 'cooking_time') # 'image' добавить
+        fields = ('id', 'name', 'image', 'cooking_time', )
 
 
 class RecipeListSerializer(serializers.ModelSerializer):
@@ -62,6 +78,7 @@ class RecipeListSerializer(serializers.ModelSerializer):
                                              read_only=True, many=True)
     is_favorited = serializers.SerializerMethodField(read_only=True)
     is_in_shopping_cart = serializers.SerializerMethodField(read_only=True)
+    image = Base64ImageField()
 
     class Meta:
         model = Recipe
@@ -69,7 +86,7 @@ class RecipeListSerializer(serializers.ModelSerializer):
                   'ingredients',
                   'is_favorited',
                   'is_in_shopping_cart',
-                  'name', 'text', 'cooking_time') # image добавить
+                  'name', 'image', 'text', 'cooking_time', )
 
     def get_is_favorited(self, value):
         user = self.context.get('request').user
@@ -96,11 +113,12 @@ class RecipeCreateSerializer(serializers.ModelSerializer):
     tags = serializers.PrimaryKeyRelatedField(many=True,
                                               queryset=Tag.objects.all())
     ingredients = RecipeIngredientIdSerializer(many=True,)
+    image = Base64ImageField()
 
     class Meta:
         model = Recipe
         fields = ('ingredients', 'tags',
-                  'name', 'text', 'cooking_time') # image добавить
+                  'name', 'image', 'text', 'cooking_time', )
 
     def create(self, validated_data):
         tags = validated_data.pop('tags')
@@ -117,20 +135,23 @@ class RecipeCreateSerializer(serializers.ModelSerializer):
         return recipe
 
     def update(self, instance, validated_data):
-        # author = self.context['request'].user
-        recipe = instance
+        instance.name = validated_data.get('name', instance.name)
+        instance.image = validated_data.get('image', instance.image)
+        instance.text = validated_data.get('text', instance.text)
+        instance.cooking_time = validated_data.get('cooking_time',
+                                                   instance.cooking_time)
         if 'tags' in validated_data:
             tags = validated_data.pop('tags')
-            recipe.tags.all().delete() # удаляет тег вообще!
-            recipe.tags.set(tags)
+            instance.tags.set(tags)
         if 'ingredients' in validated_data:
             ingredients_value = validated_data.pop('ingredients')
-            recipe.recipe_ingredients.all().delete()
+            instance.recipe_ingredients.all().delete()
 
             for value in ingredients_value:
                 RecipeIngredients.objects.create(
-                    recipe=recipe,
+                    recipe=instance,
                     ingredient=value.get('id'),
                     amount=value.get('amount')
                 )
-        return recipe # не все даанные обновляются
+        instance.save()
+        return instance

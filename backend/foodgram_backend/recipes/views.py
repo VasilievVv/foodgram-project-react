@@ -50,14 +50,30 @@ class FavoriteView(generics.CreateAPIView,
 
 class ShoppingCartView(views.APIView):
     """./"""
-    @action(detail=False, url_path='download_shopping_cart')
+    @action(detail=False, methods=['get'], url_path='download_shopping_cart')
     def get(self, request):
         user = request.user
         recipes_in_cart = RecipeIngredients.objects.filter(
             recipe__cart_recipe__user=user)
         ingredients = recipes_in_cart.values(
             'ingredient__name',
-            'ingredient__measurement_unit') # как добаввить количество7
+            'ingredient__measurement_unit').annotate(
+            ingredient_sum=Sum('amount')
+        )
+        shopping_list = 'Список покупок: \n'
+        for ingredient in ingredients:
+            shopping_list += (
+                f'{ingredient["ingredient__name"]} - '
+                f'{ingredient["ingredient_sum"]} '
+                f'({ingredient["ingredient__measurement_unit"]})\n'
+            )
+            response = HttpResponse(
+                shopping_list, content_type='text/plain; charset=utf8')
+            response[
+                'Content-Disposition'
+            ] = f'attachment; filename=shopping_list.txt'
+        return response
+
 
 
     def post(self, request, pk):
@@ -83,6 +99,7 @@ class RecipeListCreateView(generics.ListCreateAPIView):
     def get_serializer_class(self):
         if self.request.method == 'POST':
             return RecipeCreateSerializer
+        return RecipeListSerializer
 
 
 class RecipeDetailView(generics.RetrieveUpdateDestroyAPIView):
@@ -94,4 +111,5 @@ class RecipeDetailView(generics.RetrieveUpdateDestroyAPIView):
     def get_serializer_class(self):
         if self.request.method == 'PATCH':
             return RecipeCreateSerializer
+        return RecipeListSerializer
 
