@@ -3,7 +3,7 @@ from rest_framework import serializers
 from django.contrib.auth import get_user_model
 
 from recipes.models import Recipe
-# from recipes.serializers import Base64ImageField # циклический импорт???
+from recipes.specialserializer import Base64ImageField
 from .models import Follow
 
 
@@ -39,11 +39,11 @@ class UsersSerializer(serializers.ModelSerializer):
 class FollowRecipeSerializer(serializers.ModelSerializer):
     """Сериализатор рецепта для подписок."""
 
-    # image = Base64ImageField()
+    image = Base64ImageField()
 
     class Meta:
         model = Recipe
-        fields = ('id', 'name', 'cooking_time', )
+        fields = ('id', 'name', 'image', 'cooking_time', )
 
 
 class FollowSerializer(serializers.ModelSerializer):
