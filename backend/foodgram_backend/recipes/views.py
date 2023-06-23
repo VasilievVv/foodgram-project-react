@@ -7,6 +7,7 @@ from rest_framework.decorators import action
 from rest_framework.response import Response
 
 from .models import Tag, Ingredient, Favorite, Recipe, ShoppingCart, RecipeIngredients
+from .pagination import CustomPaginator
 from .serializers import (TagSerializer, IngredientSerializer,
                           FavoriteSerializer, ShoppingCartSerializer,
                           RecipeListSerializer, RecipeCreateSerializer)
@@ -95,6 +96,7 @@ class RecipeListCreateView(generics.ListCreateAPIView):
 
     queryset = Recipe.objects.all()
     serializer_class = RecipeListSerializer
+    pagination_class = CustomPaginator
 
     def get_serializer_class(self):
         if self.request.method == 'POST':

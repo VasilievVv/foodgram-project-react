@@ -4,21 +4,35 @@ from django.shortcuts import get_object_or_404
 from rest_framework import status, generics
 from rest_framework.response import Response
 
+from djoser.views import UserViewSet
+
+from recipes.pagination import CustomPaginator
 from .models import Follow
 from .serializers import FollowSerializer
 
 User = get_user_model()
 
 
+# class CustomUserViewSet(UserViewSet):
+#     """Добавляем пагинацию."""
+#
+#     pagination_class =
+
+
 class FollowlistView(generics.ListAPIView):
+    """./"""
+
+    pagination_class = CustomPaginator
 
     def get(self, request):
-        following = User.objects.filter(following__user=self.request.user)
+        following = User.objects.filter(
+            following__user=self.request.user).order_by('id')
+        paginate_queryset = self.paginate_queryset(following)
         serializer = FollowSerializer(
-            following,
+            paginate_queryset,
             many=True,
             context={'request': request})
-        return Response(serializer.data, status=status.HTTP_200_OK)
+        return self.get_paginated_response(serializer.data)
 
 
 class FollowCreateView(generics.CreateAPIView,
