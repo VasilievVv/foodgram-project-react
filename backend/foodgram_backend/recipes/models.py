@@ -89,6 +89,13 @@ class Recipe(models.Model):
         validators=[MinValueValidator(1)],
     )
 
+    class Meta:
+        verbose_name = 'Рецепт'
+        verbose_name_plural = 'Рецепты'
+
+    def __str__(self):
+        return self.name
+
 
 class RecipeIngredients(models.Model):
     """Доп таблица для ингридиентов в рецепте."""
@@ -109,6 +116,15 @@ class RecipeIngredients(models.Model):
         default=1,
         validators=[MinValueValidator(1)],
     )
+
+    class Meta:
+        verbose_name = 'Ингредиенты в Рецептах'
+        verbose_name_plural = 'Ингредиенты в Рецептах'
+
+    def __str__(self):
+        return f'Игредиент {self.ingredient.name}' \
+               f'добавлен в рецепт {self.recipe.name}' \
+               f'в количестве {self.amount}'
 
 
 class Favorite(models.Model):
