@@ -2,12 +2,13 @@ from django.contrib.auth import get_user_model
 from django.db.models import Sum
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
-from rest_framework import viewsets, views, status, generics
+from rest_framework import viewsets, views, status, generics, permissions
 from rest_framework.decorators import action
 from rest_framework.response import Response
 
 from .models import Tag, Ingredient, Favorite, Recipe, ShoppingCart, RecipeIngredients
 from .pagination import CustomPaginator
+from .permissions import IsAuthorOrReadOnly
 from .serializers import (TagSerializer, IngredientSerializer,
                           FavoriteSerializer, ShoppingCartSerializer,
                           RecipeListSerializer, RecipeCreateSerializer)
@@ -20,6 +21,7 @@ class TagViewSet(viewsets.ReadOnlyModelViewSet):
 
     queryset = Tag.objects.all()
     serializer_class = TagSerializer
+    permission_classes = [permissions.AllowAny]
 
 
 class IngredientViewSet(viewsets.ReadOnlyModelViewSet):
@@ -27,11 +29,14 @@ class IngredientViewSet(viewsets.ReadOnlyModelViewSet):
 
     queryset = Ingredient.objects.all()
     serializer_class = IngredientSerializer
+    permission_classes = [permissions.AllowAny]
 
 
 class FavoriteView(generics.CreateAPIView,
                    generics.DestroyAPIView):
     """./"""
+
+    permission_classes = [permissions.IsAuthenticated]
 
     def post(self, request, pk):
         recipe = get_object_or_404(Recipe, id=pk)
@@ -51,7 +56,11 @@ class FavoriteView(generics.CreateAPIView,
 
 class ShoppingCartView(views.APIView):
     """./"""
-    @action(detail=False, methods=['get'], url_path='download_shopping_cart')
+
+    permission_classes = [permissions.IsAuthenticated]
+
+    @action(detail=False, methods=['get'], url_path='download_shopping_cart',
+            permission_classes=[permissions.IsAuthenticated])
     def get(self, request):
         user = request.user
         recipes_in_cart = RecipeIngredients.objects.filter(
@@ -68,14 +77,12 @@ class ShoppingCartView(views.APIView):
                 f'{ingredient["ingredient_sum"]} '
                 f'({ingredient["ingredient__measurement_unit"]})\n'
             )
-            response = HttpResponse(
-                shopping_list, content_type='text/plain; charset=utf8')
-            response[
-                'Content-Disposition'
-            ] = f'attachment; filename=shopping_list.txt'
+        response = HttpResponse(
+            shopping_list, content_type='text/plain; charset=utf8')
+        response[
+            'Content-Disposition'
+        ] = f'attachment; filename=shopping_list.txt'
         return response
-
-
 
     def post(self, request, pk):
         recipe = get_object_or_404(Recipe, id=pk)
@@ -97,6 +104,7 @@ class RecipeListCreateView(generics.ListCreateAPIView):
     queryset = Recipe.objects.all()
     serializer_class = RecipeListSerializer
     pagination_class = CustomPaginator
+    permission_classes = [IsAuthorOrReadOnly]
 
     def get_serializer_class(self):
         if self.request.method == 'POST':
@@ -109,9 +117,9 @@ class RecipeDetailView(generics.RetrieveUpdateDestroyAPIView):
 
     queryset = Recipe.objects.all()
     serializer_class = RecipeListSerializer
+    permission_classes = [IsAuthorOrReadOnly]
 
     def get_serializer_class(self):
         if self.request.method == 'PATCH':
             return RecipeCreateSerializer
         return RecipeListSerializer
-

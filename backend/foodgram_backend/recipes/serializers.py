@@ -51,7 +51,7 @@ class ShoppingCartSerializer(serializers.ModelSerializer):
     """Сериализатор для Списка покупок."""
 
     name = serializers.CharField(required=False)
-    image = Base64ImageField()
+    image = Base64ImageField(required=False)
 
     class Meta:
         model = Recipe
@@ -78,12 +78,17 @@ class RecipeListSerializer(serializers.ModelSerializer):
                   'name', 'image', 'text', 'cooking_time', )
 
     def get_is_favorited(self, value):
+
         user = self.context.get('request').user
-        return Favorite.objects.filter(user=user, recipe=value.id).exists()
+        if user.is_authenticated:
+            return Favorite.objects.filter(user=user, recipe=value.id).exists()
+        return False
 
     def get_is_in_shopping_cart(self, value):
         user = self.context.get('request').user
-        return ShoppingCart.objects.filter(user=user, recipe=value.id).exists()
+        if user.is_authenticated:
+            return ShoppingCart.objects.filter(user=user, recipe=value.id).exists()
+        return False
 
 
 class RecipeIngredientIdSerializer(serializers.ModelSerializer):
