@@ -17,7 +17,7 @@ User = get_user_model()
 
 
 class TagViewSet(viewsets.ReadOnlyModelViewSet):
-    """/."""
+    """ViewSet для Тегов."""
 
     queryset = Tag.objects.all()
     serializer_class = TagSerializer
@@ -25,7 +25,7 @@ class TagViewSet(viewsets.ReadOnlyModelViewSet):
 
 
 class IngredientViewSet(viewsets.ReadOnlyModelViewSet):
-    """/."""
+    """ViewSet для Ингредиентов."""
 
     queryset = Ingredient.objects.all()
     serializer_class = IngredientSerializer
@@ -34,7 +34,7 @@ class IngredientViewSet(viewsets.ReadOnlyModelViewSet):
 
 class FavoriteView(generics.CreateAPIView,
                    generics.DestroyAPIView):
-    """./"""
+    """View class для Избранного."""
 
     permission_classes = [permissions.IsAuthenticated]
 
@@ -55,7 +55,7 @@ class FavoriteView(generics.CreateAPIView,
 
 
 class ShoppingCartView(views.APIView):
-    """./"""
+    """View class для Списка покупок."""
 
     permission_classes = [permissions.IsAuthenticated]
 
@@ -99,7 +99,7 @@ class ShoppingCartView(views.APIView):
 
 
 class RecipeListCreateView(generics.ListCreateAPIView):
-    """././"""
+    """View class для создания рецепта и вывода списка рецептов."""
 
     queryset = Recipe.objects.all()
     serializer_class = RecipeListSerializer
@@ -113,7 +113,7 @@ class RecipeListCreateView(generics.ListCreateAPIView):
 
 
 class RecipeDetailView(generics.RetrieveUpdateDestroyAPIView):
-    """././."""
+    """View class для вывода информации о рецепте, его удаления и изменения."""
 
     queryset = Recipe.objects.all()
     serializer_class = RecipeListSerializer

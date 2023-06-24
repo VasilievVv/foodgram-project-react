@@ -5,14 +5,10 @@ from .validators import UsernameValidator
 
 
 class MyUserManager(UserManager):
-    """
-    Кастомный менеджер для модели User.
-    """
+    """Кастомный менеджер для модели User."""
 
     def create_user(self, username, email, password=None, **extra_fields):
-        """
-        Создает юзера.
-        """
+        """Создает юзера."""
         return super().create_user(
             username,
             email,
@@ -21,9 +17,7 @@ class MyUserManager(UserManager):
         )
 
     def create_superuser(self, username, email, password=None, **extra_fields):
-        """
-        Создает суперюзера.
-        """
+        """Создает суперюзера."""
         extra_fields.setdefault('role', 'admin')
         return super().create_superuser(
             username,
@@ -34,9 +28,8 @@ class MyUserManager(UserManager):
 
 
 class User(AbstractUser):
-    """
-    Кастомная модель User.
-    """
+    """Кастомная модель User."""
+
     GUEST = 'guest'
     USER = 'user'
     ADMIN = 'admin'
@@ -45,7 +38,6 @@ class User(AbstractUser):
         (USER, USER),
         (ADMIN, ADMIN),
     )
-
     username = models.CharField(
         'пользователь',
         max_length=150,

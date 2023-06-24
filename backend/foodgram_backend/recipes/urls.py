@@ -1,16 +1,13 @@
-from rest_framework.routers import SimpleRouter
-
 from django.urls import include, path
+from rest_framework.routers import SimpleRouter
 
 from .views import (TagViewSet, IngredientViewSet, FavoriteView,
                     ShoppingCartView, RecipeListCreateView, RecipeDetailView)
-
 
 router_api_v1 = SimpleRouter()
 
 router_api_v1.register('tags', TagViewSet)
 router_api_v1.register('ingredients', IngredientViewSet)
-
 
 urlpatterns = [
     path('recipes/', RecipeListCreateView.as_view()),

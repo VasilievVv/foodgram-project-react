@@ -1,8 +1,6 @@
 from django.core.validators import MinValueValidator
-
 from django.contrib.auth import get_user_model
 from django.db import models
-
 
 User = get_user_model()
 
@@ -93,7 +91,7 @@ class Recipe(models.Model):
 
 
 class RecipeIngredients(models.Model):
-    """Доп таблица для ингридиентов в рецепте"""
+    """Доп таблица для ингридиентов в рецепте."""
 
     ingredient = models.ForeignKey(
         Ingredient,

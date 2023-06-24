@@ -2,12 +2,11 @@ from rest_framework import serializers
 
 from .models import Tag, Ingredient, Recipe, RecipeIngredients, Favorite, ShoppingCart
 from .specialserializer import Hex2NameColor, Base64ImageField
-
 from users.serializers import UsersSerializer
 
 
 class TagSerializer(serializers.ModelSerializer):
-    """Сериализатор для Tag."""
+    """Сериализатор для Тегов."""
 
     color = Hex2NameColor()
 
@@ -17,7 +16,7 @@ class TagSerializer(serializers.ModelSerializer):
 
 
 class IngredientSerializer(serializers.ModelSerializer):
-    """Сериализатор для Ingredient."""
+    """Сериализатор для списка Ингредиентов."""
 
     class Meta:
         model = Ingredient
@@ -25,7 +24,7 @@ class IngredientSerializer(serializers.ModelSerializer):
 
 
 class IngredientRecipeSerializer(serializers.ModelSerializer):
-    """Сериализатор для Ingredient в Recipe"""
+    """Сериализатор для Ингредиентов в Рецепте."""
 
     id = serializers.ReadOnlyField(source='ingredient.id')
     name = serializers.ReadOnlyField(source='ingredient.name')
@@ -59,7 +58,7 @@ class ShoppingCartSerializer(serializers.ModelSerializer):
 
 
 class RecipeListSerializer(serializers.ModelSerializer):
-    """./"""
+    """Сериализатор для списка Рецептов."""
 
     tags = TagSerializer(read_only=True, many=True)
     author = UsersSerializer(read_only=True, many=False)
@@ -92,7 +91,7 @@ class RecipeListSerializer(serializers.ModelSerializer):
 
 
 class RecipeIngredientIdSerializer(serializers.ModelSerializer):
-    """;;';"""
+    """Дополнительный сериализатор Интредиентов при создании Рецепта."""
 
     id = serializers.PrimaryKeyRelatedField(queryset=Ingredient.objects.all())
 
@@ -102,7 +101,7 @@ class RecipeIngredientIdSerializer(serializers.ModelSerializer):
 
 
 class RecipeCreateSerializer(serializers.ModelSerializer):
-    """//"""
+    """Сериализатор создания/обновления Рецепта."""
 
     tags = serializers.PrimaryKeyRelatedField(many=True,
                                               queryset=Tag.objects.all())
