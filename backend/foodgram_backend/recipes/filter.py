@@ -1,23 +1,21 @@
 from django.contrib.auth import get_user_model
-from django_filters import rest_framework
+import django_filters
 
 from .models import Recipe, Tag
 
 User = get_user_model()
 
 
-class RecipeFilter(rest_framework.FilterSet):
+class RecipeFilter(django_filters.FilterSet):
     """Фильтр для модели Рецепта."""
 
-    author = rest_framework.ModelChoiceFilter(
-        queryset=User.objects.all(),
-        field_name='author',
+    author = django_filters.AllValuesFilter(
+        field_name='author__id'
     )
     # is_favorited =
     # is_in_shopping_cart =
-    tags = rest_framework.ModelChoiceFilter(
-        queryset=Tag.objects.all(),
-        field_name='tags__slug',
+    tags = django_filters.AllValuesMultipleFilter(
+        field_name='tags__slug'
     )
 
     class Meta:
@@ -26,9 +24,9 @@ class RecipeFilter(rest_framework.FilterSet):
                   # 'is_favorited',
                   # 'is_in_shopping_cart',
                   'tags', )
-
-    def get_is_favorited(self):
-        pass
-
-    def get_is_in_shopping_cart(self):
-        pass
+    #
+    # def get_is_favorited(self):
+    #     pass
+    #
+    # def get_is_in_shopping_cart(self):
+    #     pass

@@ -10,6 +10,7 @@ from rest_framework.response import Response
 from .models import Tag, Ingredient, Favorite, Recipe, ShoppingCart, RecipeIngredients
 from .pagination import CustomPaginator
 from .permissions import IsAuthorOrReadOnly
+from .filter import RecipeFilter
 from .serializers import (TagSerializer, IngredientSerializer,
                           FavoriteSerializer, ShoppingCartSerializer,
                           RecipeListSerializer, RecipeCreateSerializer)
@@ -108,6 +109,9 @@ class RecipeListCreateView(generics.ListCreateAPIView):
     serializer_class = RecipeListSerializer
     pagination_class = CustomPaginator
     permission_classes = [IsAuthorOrReadOnly]
+    filter_backends = (DjangoFilterBackend, )
+    filterset_class = RecipeFilter
+    filterset_fields = ('author',)
 
     def get_serializer_class(self):
         if self.request.method == 'POST':
