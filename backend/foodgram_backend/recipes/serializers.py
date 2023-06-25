@@ -1,6 +1,7 @@
 from rest_framework import serializers
 
-from .models import Tag, Ingredient, Recipe, RecipeIngredients, Favorite, ShoppingCart
+from .models import (Tag, Ingredient, Recipe,
+                     RecipeIngredients, Favorite, ShoppingCart)
 from .specialserializer import Hex2NameColor, Base64ImageField
 from users.serializers import UsersSerializer
 
@@ -28,7 +29,8 @@ class IngredientRecipeSerializer(serializers.ModelSerializer):
 
     id = serializers.ReadOnlyField(source='ingredient.id')
     name = serializers.ReadOnlyField(source='ingredient.name')
-    measurement_unit = serializers.ReadOnlyField(source='ingredient.measurement_unit')
+    measurement_unit = serializers.ReadOnlyField(
+        source='ingredient.measurement_unit')
 
     class Meta:
         model = RecipeIngredients
@@ -85,7 +87,8 @@ class RecipeListSerializer(serializers.ModelSerializer):
     def get_is_in_shopping_cart(self, value):
         user = self.context.get('request').user
         if user.is_authenticated:
-            return ShoppingCart.objects.filter(user=user, recipe=value.id).exists()
+            return ShoppingCart.objects.filter(user=user,
+                                               recipe=value.id).exists()
         return False
 
 

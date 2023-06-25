@@ -20,4 +20,3 @@ class RecipeFilter(django_filters.FilterSet):
         model = Recipe
         fields = ('author',
                   'tags', )
-

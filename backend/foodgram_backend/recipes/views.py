@@ -3,11 +3,13 @@ from django.db.models import Sum
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
 from django_filters.rest_framework import DjangoFilterBackend
-from rest_framework import viewsets, views, status, generics, permissions, filters
+from rest_framework import (viewsets, views, status,
+                            generics, permissions, filters)
 from rest_framework.decorators import action
 from rest_framework.response import Response
 
-from .models import Tag, Ingredient, Favorite, Recipe, ShoppingCart, RecipeIngredients
+from .models import (Tag, Ingredient, Favorite,
+                     Recipe, ShoppingCart, RecipeIngredients)
 from .pagination import CustomPaginator
 from .permissions import IsAuthorOrReadOnly
 from .filter import RecipeFilter
@@ -52,7 +54,7 @@ class FavoriteView(generics.CreateAPIView,
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-    def delete(self,  request, pk):
+    def delete(self, request, pk):
         recipe = get_object_or_404(Recipe, id=pk)
         get_object_or_404(Favorite, user=request.user, recipe=recipe).delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
@@ -85,7 +87,7 @@ class ShoppingCartView(views.APIView):
             shopping_list, content_type='text/plain; charset=utf8')
         response[
             'Content-Disposition'
-        ] = f'attachment; filename=shopping_list.txt'
+        ] = 'attachment; filename=shopping_list.txt'
         return response
 
     def post(self, request, pk):
@@ -98,7 +100,8 @@ class ShoppingCartView(views.APIView):
 
     def delete(self, request, pk):
         recipe = get_object_or_404(Recipe, id=pk)
-        get_object_or_404(ShoppingCart, user=request.user, recipe=recipe).delete()
+        get_object_or_404(ShoppingCart, user=request.user,
+                          recipe=recipe).delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 
