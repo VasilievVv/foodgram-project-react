@@ -111,12 +111,28 @@ class RecipeListCreateView(generics.ListCreateAPIView):
     permission_classes = [IsAuthorOrReadOnly]
     filter_backends = (DjangoFilterBackend, )
     filterset_class = RecipeFilter
-    filterset_fields = ('author',)
+    filterset_fields = ('author', 'tags',)
 
     def get_serializer_class(self):
         if self.request.method == 'POST':
             return RecipeCreateSerializer
         return RecipeListSerializer
+
+    def get_queryset(self):
+        def _get_queryset_params(params):
+            if self.request.query_params.get(params) == '1':
+                return True
+            return False
+
+        user = self.request.user
+
+        if _get_queryset_params('is_favorited'):
+            return Recipe.objects.filter(favorite_recipe__user=user)
+
+        if _get_queryset_params('is_in_shopping_cart'):
+            return Recipe.objects.filter(cart_recipe__user=user)
+
+        return Recipe.objects.all()
 
 
 class RecipeDetailView(generics.RetrieveUpdateDestroyAPIView):

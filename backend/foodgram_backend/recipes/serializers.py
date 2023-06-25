@@ -77,7 +77,6 @@ class RecipeListSerializer(serializers.ModelSerializer):
                   'name', 'image', 'text', 'cooking_time', )
 
     def get_is_favorited(self, value):
-
         user = self.context.get('request').user
         if user.is_authenticated:
             return Favorite.objects.filter(user=user, recipe=value.id).exists()
