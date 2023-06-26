@@ -52,14 +52,14 @@ class User(AbstractUser):
     first_name = models.CharField('имя', max_length=150)
     last_name = models.CharField('фамилия', max_length=150)
     role = models.CharField(
-        'Role',
+        'роль',
         max_length=9,
         choices=ROLES,
         default='user',
     )
 
     USERNAME_FIELD = 'email'
-    REQUIRED_FIELDS = ['username', 'password', 'first_name', 'last_name', ]
+    REQUIRED_FIELDS = ('username', 'password', 'first_name', 'last_name', )
 
     objects = MyUserManager()
 
@@ -102,10 +102,14 @@ class Follow(models.Model):
             models.UniqueConstraint(
                 fields=['user', 'following'],
                 name='unique_following'),
-            models.CheckConstraint(
-                check=~models.Q(following=models.F('user')),
-                name='cant_subscribe_yourself'
-            ),
+            # models.CheckConstraint(
+            #     check=~models.Q(following=models.F('user')),
+            #     name='cant_subscribe_yourself'
+            # ),
+            # Можно ли переопределить какой-то метод, или написать свой
+            # добавить проверку is following == user:
+            # raise ValidationError
+            # возможно такое решение?
         ]
         verbose_name = 'Подписка'
         verbose_name_plural = 'Подписки'
