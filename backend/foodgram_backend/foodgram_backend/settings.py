@@ -1,16 +1,21 @@
+import os
+
 from pathlib import Path
+from dotenv import load_dotenv
+
+load_dotenv()
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-SECRET_KEY = 'django-insecure-hd#nx$qt$zydf(y5@88lfc6b=g0y^74l$7o2&=sjqj@19m%c_s'
+SECRET_KEY = os.getenv('SECRET_KEY')
 
 MIN_VALUE_AMOUNT_AND_COOKING_TIME = 1
 MAX_VALUE_AMOUNT = 999
 MAX_VALUE_COOKING_TIME = 300
 
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 INSTALLED_APPS = [
     'django.contrib.admin',
