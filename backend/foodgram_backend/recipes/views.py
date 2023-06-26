@@ -25,7 +25,7 @@ class TagViewSet(viewsets.ReadOnlyModelViewSet):
 
     queryset = Tag.objects.all()
     serializer_class = TagSerializer
-    permission_classes = [permissions.AllowAny]
+    permission_classes = (permissions.AllowAny, )
 
 
 class IngredientViewSet(viewsets.ReadOnlyModelViewSet):
@@ -63,7 +63,7 @@ class FavoriteView(generics.CreateAPIView,
 class ShoppingCartView(views.APIView):
     """View class для Списка покупок."""
 
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = (permissions.IsAuthenticated, )
 
     @action(detail=False, methods=['get'], url_path='download_shopping_cart',
             permission_classes=[permissions.IsAuthenticated])
@@ -123,9 +123,7 @@ class RecipeListCreateView(generics.ListCreateAPIView):
 
     def get_queryset(self):
         def _get_queryset_params(params):
-            if self.request.query_params.get(params) == '1':
-                return True
-            return False
+            return self.request.query_params.get(params) == '1'
 
         user = self.request.user
 
