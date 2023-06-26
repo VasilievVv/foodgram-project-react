@@ -1,6 +1,10 @@
-from django.core.validators import MinValueValidator
+from django.core.validators import MinValueValidator, MaxValueValidator
 from django.contrib.auth import get_user_model
 from django.db import models
+
+from foodgram_backend.settings import (MIN_VALUE_AMOUNT_AND_COOKING_TIME,
+                                       MAX_VALUE_AMOUNT,
+                                       MAX_VALUE_COOKING_TIME)
 
 User = get_user_model()
 
@@ -11,6 +15,7 @@ class Tag(models.Model):
     name = models.CharField(
         'Название',
         max_length=100,
+        unique=True,
     )
     color = models.CharField(
         'Цвет в HEX',
@@ -21,7 +26,6 @@ class Tag(models.Model):
         'слаг',
         max_length=200,
         unique=True,
-        null=True,
     )
 
     class Meta:
@@ -29,7 +33,7 @@ class Tag(models.Model):
         verbose_name_plural = 'Теги'
 
     def __str__(self):
-        return str(self.name)
+        return self.name
 
 
 class Ingredient(models.Model):
@@ -68,7 +72,6 @@ class Recipe(models.Model):
     image = models.ImageField(
         'Картинка',
         upload_to='recipes/',
-        blank=True,
     )
     text = models.TextField(
         'Описание',
@@ -85,8 +88,9 @@ class Recipe(models.Model):
     )
     cooking_time = models.PositiveSmallIntegerField(
         'Время приготовления, мин',
-        default=1,
-        validators=[MinValueValidator(1)],
+        default=MIN_VALUE_AMOUNT_AND_COOKING_TIME,
+        validators=(MinValueValidator(MIN_VALUE_AMOUNT_AND_COOKING_TIME),
+                    MaxValueValidator(MAX_VALUE_COOKING_TIME)),
     )
 
     class Meta:
@@ -113,8 +117,9 @@ class RecipeIngredients(models.Model):
     )
     amount = models.PositiveSmallIntegerField(
         'количество',
-        default=1,
-        validators=[MinValueValidator(1)],
+        default=MIN_VALUE_AMOUNT_AND_COOKING_TIME,
+        validators=(MinValueValidator(MIN_VALUE_AMOUNT_AND_COOKING_TIME),
+                    MaxValueValidator(MAX_VALUE_AMOUNT)),
     )
 
     class Meta:
@@ -122,9 +127,9 @@ class RecipeIngredients(models.Model):
         verbose_name_plural = 'Ингредиенты в Рецептах'
 
     def __str__(self):
-        return f'Игредиент {self.ingredient.name}' \
-               f'добавлен в рецепт {self.recipe.name}' \
-               f'в количестве {self.amount}'
+        return (f'Игредиент {self.ingredient.name}'
+                f'добавлен в рецепт {self.recipe.name}'
+                f'в количестве {self.amount}')
 
 
 class Favorite(models.Model):
@@ -182,5 +187,5 @@ class ShoppingCart(models.Model):
         verbose_name_plural = 'рецепты в списке покупок'
 
     def __str__(self):
-        return f'Пользователь {self.user} добавил рецепт ' \
-               f'{self.recipe} в список покупок'
+        return (f'Пользователь {self.user} добавил рецепт'
+                f'{self.recipe} в список покупок')
