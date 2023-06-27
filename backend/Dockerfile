@@ -2,7 +2,7 @@ FROM python:3.7-slim
 
 WORKDIR /app
 
-COPY foodgram_backend/ ./
+COPY foodgram_backend/ .
 
 RUN pip3 install -r ./requirements.txt --no-cache-dir
 
