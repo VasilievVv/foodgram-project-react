@@ -192,3 +192,58 @@ class ShoppingCart(models.Model):
     def __str__(self):
         return (f'Пользователь {self.user} добавил рецепт'
                 f'{self.recipe} в список покупок')
+# class SelectedRecipe(models.Model):
+#     """Класс описания родительского класса для Избранного и Корзины."""
+#
+#     recipe = models.ForeignKey(
+#         Recipe,
+#         on_delete=models.CASCADE,
+#         related_name='selected_recipe',
+#         verbose_name='выбранный рецепт',
+#     )
+#     user = models.ForeignKey(
+#         User,
+#         on_delete=models.CASCADE,
+#         related_name='selected_user',
+#         verbose_name='выбрал рецепт',
+#     )
+#
+#     class Meta:
+#         abstract = True
+#
+#
+# class Favorite(SelectedRecipe):
+#     """Класс описания модели Избранного."""
+#
+#     class Meta:
+#         constraints = [
+#             models.UniqueConstraint(
+#                 fields=['recipe', 'user'],
+#                 name='unique_favorite'),
+#         ]
+#         verbose_name = 'рецепт в избранном'
+#         verbose_name_plural = 'рецепты в избранном'
+#
+#     def __str__(self):
+#         return f'Пользователю {self.user} понравился рецепт {self.recipe}'
+#
+#
+# class ShoppingCart(SelectedRecipe):
+#     """Класс описания модели Списка Покупок."""
+#
+#     class Meta:
+#         constraints = [
+#             models.UniqueConstraint(
+#                 fields=['recipe', 'user'],
+#                 name='unique_shopping_cart'),
+#         ]
+#         verbose_name = 'рецепт в списке покупок'
+#         verbose_name_plural = 'рецепты в списке покупок'
+#
+#     def __str__(self):
+#         return (f'Пользователь {self.user} добавил рецепт'
+#                 f'{self.recipe} в список покупок')
+# При такой реализации с одинаковыми related_name
+# при миграциях выдает ошибки типа:
+# HINT: Add or change a related_name argument to the definition
+# for 'recipes.Favorite.user' or 'recipes.ShoppingCart.user'.
