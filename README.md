@@ -1,4 +1,4 @@
-[//]: # (добавить статус воркфлоу)
+![example event parameter](https://github.com/VasilievVv/foodgram-project-react/actions/workflows/diplom_workflow.yml/badge.svg?event=push)
 
 # Сайт Foodgram, «Продуктовый помощник».
 
@@ -14,7 +14,9 @@
 
 Проект упакован в Docker.
 
-Образ на DockerHub: [//]: # (добавить ссылку)
+Образ на DockerHub: vyacheslavv/diplom:latest
+
+server http://130.193.49.244/
 
 ## Шаблон заполнения .env файла
 
