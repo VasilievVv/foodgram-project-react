@@ -41,7 +41,7 @@ class FavoriteSerializer(serializers.ModelSerializer):
     """Сериализатор для Избранного."""
 
     name = serializers.CharField(required=False)
-    image = Base64ImageField()
+    image = Base64ImageField(required=False)
 
     class Meta:
         model = Recipe
@@ -68,7 +68,7 @@ class RecipeListSerializer(serializers.ModelSerializer):
                                              read_only=True, many=True)
     is_favorited = serializers.SerializerMethodField(read_only=True)
     is_in_shopping_cart = serializers.SerializerMethodField(read_only=True)
-    image = Base64ImageField()
+    image = Base64ImageField(required=False)
 
     class Meta:
         model = Recipe
@@ -109,7 +109,7 @@ class RecipeCreateSerializer(serializers.ModelSerializer):
     tags = serializers.PrimaryKeyRelatedField(many=True,
                                               queryset=Tag.objects.all())
     ingredients = RecipeIngredientIdSerializer(many=True,)
-    image = Base64ImageField()
+    image = Base64ImageField(required=False)
 
     class Meta:
         model = Recipe
