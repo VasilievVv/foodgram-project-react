@@ -18,6 +18,10 @@
 
 server http://130.193.49.244/
 
+Юзер - alex - username
+email - admin@admin.admin
+Пароль - из сообщения в ревью
+
 ## Шаблон заполнения .env файла
 
 
