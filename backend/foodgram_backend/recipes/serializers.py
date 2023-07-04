@@ -41,11 +41,11 @@ class FavoriteSerializer(serializers.ModelSerializer):
     """Сериализатор для Избранного."""
 
     name = serializers.CharField(required=False)
-    image = Base64ImageField(required=False)
+    # image = Base64ImageField(required=False)
 
     class Meta:
         model = Recipe
-        fields = ('id', 'name', 'image', 'cooking_time', )
+        fields = ('id', 'name', 'cooking_time', )
 
 
 class ShoppingCartSerializer(serializers.ModelSerializer):
