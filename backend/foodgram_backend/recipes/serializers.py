@@ -106,14 +106,17 @@ class RecipeIngredientIdSerializer(serializers.ModelSerializer):
 class RecipeCreateSerializer(serializers.ModelSerializer):
     """Сериализатор создания/обновления Рецепта."""
 
+    id = serializers.ReadOnlyField()
     tags = serializers.PrimaryKeyRelatedField(many=True,
                                               queryset=Tag.objects.all())
-    ingredients = RecipeIngredientIdSerializer(many=True,)
+    author = UsersSerializer(read_only=True)
+    ingredients = RecipeIngredientIdSerializer(many=True, required=True)
     image = Base64ImageField(required=False)
 
     class Meta:
         model = Recipe
-        fields = ('ingredients', 'tags',
+        fields = ('id', 'tags', 'author',
+                  'ingredients',
                   'name', 'image', 'text', 'cooking_time', )
 
     def create(self, validated_data):

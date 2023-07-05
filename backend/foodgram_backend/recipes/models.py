@@ -38,6 +38,10 @@ class Tag(models.Model):
     def __str__(self):
         return self.name
 
+    def save(self, *args, **kwargs):
+        self.color = self.color.upper()
+        return super(Tag, self).save(*args, **kwargs)
+
 
 class Ingredient(models.Model):
     """Класс описания модели Ингридиента."""
@@ -95,10 +99,13 @@ class Recipe(models.Model):
         validators=(MinValueValidator(MIN_VALUE_AMOUNT_AND_COOKING_TIME),
                     MaxValueValidator(MAX_VALUE_COOKING_TIME)),
     )
+    pub_date = models.DateTimeField('дата создания рецепта',
+                                    auto_now_add=True, )
 
     class Meta:
         verbose_name = 'Рецепт'
         verbose_name_plural = 'Рецепты'
+        ordering = ['-pub_date']
 
     def __str__(self):
         return self.name

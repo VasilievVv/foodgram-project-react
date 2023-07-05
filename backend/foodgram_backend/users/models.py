@@ -102,10 +102,10 @@ class Follow(models.Model):
             models.UniqueConstraint(
                 fields=['user', 'following'],
                 name='unique_following'),
-            # models.CheckConstraint(
-            #     check=~models.Q(following=models.F('user')),
-            #     name='cant_subscribe_yourself'
-            # ),
+            models.CheckConstraint(
+                check=~models.Q(following=models.F('user')),
+                name='cant_subscribe_yourself'
+            ),
             # Можно ли переопределить какой-то метод, или написать свой
             # добавить проверку is following == user:
             # raise ValidationError
