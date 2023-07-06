@@ -4,7 +4,7 @@ from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import (viewsets, views, status,
-                            generics, permissions, filters)
+                            generics, permissions)
 from rest_framework.decorators import action
 from rest_framework.response import Response
 
@@ -12,7 +12,7 @@ from .models import (Tag, Ingredient, Favorite,
                      Recipe, ShoppingCart, RecipeIngredients)
 from .pagination import CustomPaginator
 from .permissions import IsAuthorOrReadOnly
-from .filter import RecipeFilter
+from .filter import RecipeFilter, IngredientFilter
 from .serializers import (TagSerializer, IngredientSerializer,
                           FavoriteSerializer, ShoppingCartSerializer,
                           RecipeListSerializer, RecipeCreateSerializer)
@@ -34,9 +34,9 @@ class IngredientViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = Ingredient.objects.all()
     serializer_class = IngredientSerializer
     permission_classes = [permissions.AllowAny]
-    # filter_class = IngredientFilter
-    filter_backends = (filters.SearchFilter, )
-    search_fields = ('^name', )
+    filter_class = IngredientFilter
+    # filter_backends = (filters.SearchFilter, )
+    # search_fields = ('^name', )
 
 
 class FavoriteView(generics.CreateAPIView,
