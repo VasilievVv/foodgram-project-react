@@ -12,7 +12,7 @@ from .models import (Tag, Ingredient, Favorite,
                      Recipe, ShoppingCart, RecipeIngredients)
 from .pagination import CustomPaginator
 from .permissions import IsAuthorOrReadOnly
-from .filter import RecipeFilter
+from .filter import RecipeFilter, IngredientFilter
 from .serializers import (TagSerializer, IngredientSerializer,
                           FavoriteSerializer, ShoppingCartSerializer,
                           RecipeListSerializer, RecipeCreateSerializer)
@@ -34,8 +34,9 @@ class IngredientViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = Ingredient.objects.all()
     serializer_class = IngredientSerializer
     permission_classes = [permissions.AllowAny]
+    # filter_class = IngredientFilter
     filter_backends = (filters.SearchFilter, )
-    search_fields = ('name', )
+    search_fields = ('^name', )
 
 
 class FavoriteView(generics.CreateAPIView,

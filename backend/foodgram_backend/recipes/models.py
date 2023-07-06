@@ -1,6 +1,8 @@
 from colorfield.fields import ColorField
 
-from django.core.validators import MinValueValidator, MaxValueValidator
+from django.core.validators import (MinValueValidator,
+                                    MaxValueValidator,
+                                    )
 from django.contrib.auth import get_user_model
 from django.db import models
 
@@ -32,6 +34,12 @@ class Tag(models.Model):
     )
 
     class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                fields=['name', 'color', 'slug', ],
+                name='unique_tag'
+            )
+        ]
         verbose_name = 'Тег'
         verbose_name_plural = 'Теги'
 
@@ -39,8 +47,11 @@ class Tag(models.Model):
         return self.name
 
     def save(self, *args, **kwargs):
-        self.color = self.color.upper()
-        return super(Tag, self).save(*args, **kwargs)
+        try:
+            self.color = self.color.upper()
+            return super(Tag, self).save(*args, **kwargs)
+        except Exception:
+            raise ValueError('Такой цвет уже есть')
 
 
 class Ingredient(models.Model):
@@ -56,6 +67,12 @@ class Ingredient(models.Model):
     )
 
     class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                fields=['name', ],
+                name='unique_ingredient'
+            )
+        ]
         verbose_name = 'Ингридиент'
         verbose_name_plural = 'Ингридиенты'
 
@@ -103,6 +120,12 @@ class Recipe(models.Model):
                                     auto_now_add=True, )
 
     class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                fields=['name', 'text', ],
+                name='unique_recipe'
+            )
+        ]
         verbose_name = 'Рецепт'
         verbose_name_plural = 'Рецепты'
         ordering = ['-pub_date']
