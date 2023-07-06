@@ -46,9 +46,8 @@ class Tag(models.Model):
     def __str__(self):
         return self.name
 
-    def save(
-        self, force_insert=False, force_update=False, using=None, update_fields=None
-    ):
+    def save(self, force_insert=False, force_update=False,
+             using=None, update_fields=None):
         self.color = self.color.upper()
         return super(Tag, self).save(force_insert,
                                      force_update,
