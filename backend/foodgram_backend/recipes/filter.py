@@ -1,7 +1,7 @@
 from django.contrib.auth import get_user_model
 import django_filters
 
-from .models import Recipe, Ingredient
+from .models import Recipe
 
 User = get_user_model()
 
