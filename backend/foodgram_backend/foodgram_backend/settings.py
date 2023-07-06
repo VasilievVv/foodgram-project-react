@@ -13,7 +13,7 @@ MIN_VALUE_AMOUNT_AND_COOKING_TIME = 1
 MAX_VALUE_AMOUNT = 999
 MAX_VALUE_COOKING_TIME = 300
 
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = ['*']
 
@@ -65,18 +65,18 @@ TEMPLATES = [
 WSGI_APPLICATION = 'foodgram_backend.wsgi.application'
 
 DATABASES = {
-    # 'default': {
-    #     'ENGINE': 'django.db.backends.sqlite3',
-    #     'NAME': BASE_DIR / 'db.sqlite3',
-    # }
     'default': {
-        'ENGINE': os.getenv('DB_ENGINE', default='django.db.backends.postgresql'),
-        'NAME': os.getenv('DB_NAME', default='postgres'),
-        'USER': os.getenv('POSTGRES_USER', default='postgres'),
-        'PASSWORD': os.getenv('POSTGRES_PASSWORD'),
-        'HOST': os.getenv('DB_HOST'),
-        'PORT': os.getenv('DB_PORT')
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
     }
+    # 'default': {
+    #     'ENGINE': os.getenv('DB_ENGINE', default='django.db.backends.postgresql'),
+    #     'NAME': os.getenv('DB_NAME', default='postgres'),
+    #     'USER': os.getenv('POSTGRES_USER', default='postgres'),
+    #     'PASSWORD': os.getenv('POSTGRES_PASSWORD'),
+    #     'HOST': os.getenv('DB_HOST'),
+    #     'PORT': os.getenv('DB_PORT')
+    # }
 }
 
 REST_FRAMEWORK = {
@@ -87,6 +87,7 @@ REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework.authentication.TokenAuthentication',
     ],
+    'SEARCH_PARAM': 'name',
 }
 
 AUTH_PASSWORD_VALIDATORS = [

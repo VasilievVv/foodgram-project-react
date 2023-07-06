@@ -25,7 +25,7 @@ class FollowlistView(generics.ListAPIView):
 
     def get(self, request):
         following = User.objects.filter(
-            following__user=self.request.user).order_by('id')
+            following__user=self.request.user).order_by('id')[:3]
         paginate_queryset = self.paginate_queryset(following)
         serializer = FollowSerializer(
             paginate_queryset,

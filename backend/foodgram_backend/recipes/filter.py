@@ -20,15 +20,3 @@ class RecipeFilter(django_filters.FilterSet):
         model = Recipe
         fields = ('author',
                   'tags', )
-
-
-class IngredientFilter(django_filters.FilterSet):
-    """Фильтр для модели Ингредиентов."""
-
-    name = django_filters.CharFilter(
-        lookup_expr='istartswitch',
-    )
-
-    class Meta:
-        model = Ingredient
-        fields = ('name', )

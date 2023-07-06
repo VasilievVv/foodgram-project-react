@@ -46,12 +46,14 @@ class Tag(models.Model):
     def __str__(self):
         return self.name
 
-    def save(self, *args, **kwargs):
-        try:
-            self.color = self.color.upper()
-            return super(Tag, self).save(*args, **kwargs)
-        except Exception:
-            raise ValueError('Такой цвет уже есть')
+    def save(
+        self, force_insert=False, force_update=False, using=None, update_fields=None
+    ):
+        self.color = self.color.upper()
+        return super(Tag, self).save(force_insert,
+                                     force_update,
+                                     using,
+                                     update_fields)
 
 
 class Ingredient(models.Model):
@@ -122,7 +124,7 @@ class Recipe(models.Model):
     class Meta:
         constraints = [
             models.UniqueConstraint(
-                fields=['name', 'text', ],
+                fields=['author', 'name', ],
                 name='unique_recipe'
             )
         ]

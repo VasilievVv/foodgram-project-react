@@ -24,16 +24,17 @@ class IngredientAdmin(admin.ModelAdmin):
     empty_value_display = '-пусто-'
 
 
-@admin.register(RecipeIngredients)
-class RecipeIngredientAdmin(admin.ModelAdmin):
-    list_display = ('pk', 'recipe', 'ingredient', 'amount', )
-    list_editable = ('amount', )
+class RecipeIngredientAdminInline(admin.TabularInline):
+    model = RecipeIngredients
+    extra = 1
+    min_num = 1
 
 
 @admin.register(Recipe)
 class RecipeAdmin(admin.ModelAdmin):
     """Описываем модель Рецепта в админке."""
 
+    inlines = [RecipeIngredientAdminInline]
     list_display = ('id', 'name', 'image', 'author', )
     search_fields = ('name', 'author', )
     list_filter = ('name', 'author', )

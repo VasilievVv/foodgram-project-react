@@ -1,4 +1,5 @@
 from rest_framework import serializers
+from rest_framework.validators import UniqueTogetherValidator
 
 from .models import (Tag, Ingredient, Recipe,
                      RecipeIngredients, Favorite, ShoppingCart)
@@ -109,15 +110,33 @@ class RecipeCreateSerializer(serializers.ModelSerializer):
     id = serializers.ReadOnlyField()
     tags = serializers.PrimaryKeyRelatedField(many=True,
                                               queryset=Tag.objects.all())
-    author = UsersSerializer(read_only=True)
+    author = UsersSerializer(read_only=True,
+                             default=serializers.CurrentUserDefault())
     ingredients = RecipeIngredientIdSerializer(many=True, required=True)
+    is_favorited = serializers.SerializerMethodField(read_only=True)
+    is_in_shopping_cart = serializers.SerializerMethodField(read_only=True)
     image = Base64ImageField(required=False)
+    cooking_time = serializers.IntegerField()
 
     class Meta:
         model = Recipe
         fields = ('id', 'tags', 'author',
                   'ingredients',
+                  'is_favorited',
+                  'is_in_shopping_cart',
                   'name', 'image', 'text', 'cooking_time', )
+        validators = [
+            UniqueTogetherValidator(
+                queryset=Recipe.objects.all(),
+                fields=('author', 'name', ),
+                message='Такой рецепт уже добавлен',
+            )
+        ]
+
+    def validate_ingredients(self, value):
+        if not value:
+            raise serializers.ValidationError('Добавьте ингредиент')
+        return value
 
     def create(self, validated_data):
         tags = validated_data.pop('tags')
@@ -154,3 +173,17 @@ class RecipeCreateSerializer(serializers.ModelSerializer):
                 )
         instance.save()
         return instance
+
+    def get_is_favorited(self, value):
+        user = self.context.get('request').user
+        return (user.is_authenticated
+                and Favorite.objects.filter(
+                    user=user,
+                    recipe=value.id).exists())
+
+    def get_is_in_shopping_cart(self, value):
+        user = self.context.get('request').user
+        return (user.is_authenticated
+                and ShoppingCart.objects.filter(
+                    user=user,
+                    recipe=value.id).exists())
