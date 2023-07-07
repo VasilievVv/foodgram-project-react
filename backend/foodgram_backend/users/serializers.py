@@ -48,7 +48,8 @@ class FollowSerializer(serializers.ModelSerializer):
     """"Сериализатор вывода инфы о подписке и создания подкиски."""
 
     is_subscribed = serializers.SerializerMethodField()
-    recipes = FollowRecipeSerializer(read_only=True, many=True)
+    # recipes = FollowRecipeSerializer(read_only=True, many=True)
+    recipes = serializers.SerializerMethodField(read_only=True)
     recipes_count = serializers.SerializerMethodField()
     email = serializers.CharField(required=False)
     username = serializers.CharField(required=False)
@@ -76,6 +77,18 @@ class FollowSerializer(serializers.ModelSerializer):
         if author != value:
             return value
         raise serializers.ValidationError("Нельзя подписаться на самого себя")
+
+    def get_recipes(self, value):
+        recipes_limit = int(self.context.get('recipes_limit'))
+        request = self.context.get('request')
+        author = request.user
+        if recipes_limit:
+            recipes = Recipe.objects.filter(author=author)[:recipes_limit]
+        else:
+            recipes = Recipe.objects.filter(author=author).all()
+        serializer = FollowRecipeSerializer(recipes, many=True,
+                                            context=self.context)
+        return serializer.data
 
     def get_is_subscribed(self, value):
         return True
