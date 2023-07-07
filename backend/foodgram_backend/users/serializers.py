@@ -79,15 +79,12 @@ class FollowSerializer(serializers.ModelSerializer):
         raise serializers.ValidationError("Нельзя подписаться на самого себя")
 
     def get_recipes(self, value):
-        recipes_limit = int(self.context.get('recipes_limit'))
-        request = self.context.get('request')
-        author = request.user
+        recipes_limit = self.context.get('recipes_limit')
         if recipes_limit:
-            recipes = Recipe.objects.filter(author=author)[:recipes_limit]
+            recipes = value.recipes.all()[:recipes_limit]
         else:
-            recipes = Recipe.objects.filter(author=author).all()
-        serializer = FollowRecipeSerializer(recipes, many=True,
-                                            context=self.context)
+            recipes = value.recipes.all()
+        serializer = FollowRecipeSerializer(recipes, many=True,)
         return serializer.data
 
     def get_is_subscribed(self, value):
