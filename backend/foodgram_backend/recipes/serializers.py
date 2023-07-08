@@ -1,6 +1,8 @@
 from rest_framework import serializers
 from rest_framework.validators import UniqueTogetherValidator
 
+from foodgram_backend.settings import (MIN_VALUE_AMOUNT_AND_COOKING_TIME,
+                                       MAX_VALUE_COOKING_TIME)
 from .models import (Tag, Ingredient, Recipe,
                      RecipeIngredients, Favorite, ShoppingCart)
 from .specialserializer import Hex2NameColor, Base64ImageField
@@ -137,6 +139,19 @@ class RecipeCreateSerializer(serializers.ModelSerializer):
         if not value:
             raise serializers.ValidationError('Добавьте ингредиент')
         return value
+
+    def validate_cooking_time(self, value):
+        if (MIN_VALUE_AMOUNT_AND_COOKING_TIME
+                <
+                value
+                >
+                MAX_VALUE_COOKING_TIME):
+            raise serializers.ValidationError(
+                f'Введите значение от {MIN_VALUE_AMOUNT_AND_COOKING_TIME}'
+                f'до {MAX_VALUE_COOKING_TIME}'
+            )
+        return value
+
 
     def create(self, validated_data):
         tags = validated_data.pop('tags')

@@ -123,3 +123,7 @@ class Follow(models.Model):
                                             using, update_fields)
         except ValidationError as e:
             raise ValidationError('Error: ', e)
+
+    def clean(self):
+        self.validate_constraints()
+        return super(Follow, self).clean()

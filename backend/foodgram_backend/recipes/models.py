@@ -58,6 +58,10 @@ class Tag(models.Model):
         except ValidationError as e:
             raise ValidationError('Error: ', e)
 
+    def clean(self):
+        self.validate_unique()
+        return super(Tag, self).clean()
+
 
 class Ingredient(models.Model):
     """Класс описания модели Ингридиента."""
