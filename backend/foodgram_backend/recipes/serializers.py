@@ -145,12 +145,12 @@ class RecipeCreateSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError(
                 'Введите значение больше 0'
             )
-        elif value > MAX_VALUE_COOKING_TIME:
+        if value > MAX_VALUE_COOKING_TIME:
             raise serializers.ValidationError(
                 'Введите значение меньше 300'
             )
-        else:
-            return value
+
+        return value
 
     def create(self, validated_data):
         tags = validated_data.pop('tags')
