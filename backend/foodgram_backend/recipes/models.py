@@ -46,16 +46,17 @@ class Tag(models.Model):
     def __str__(self):
         return self.name
 
+    def clean(self):
+        self.color = self.color.upper()
+        self.validate_unique()
+        return super(Tag, self).clean()
+
     def save(self, force_insert=False, force_update=False,
              using=None, update_fields=None):
         self.color = self.color.upper()
         return super(Tag, self).save(force_insert,
                                      force_update,
                                      using, update_fields)
-
-    def clean(self):
-        self.validate_unique()
-        return super(Tag, self).clean()
 
 
 class Ingredient(models.Model):

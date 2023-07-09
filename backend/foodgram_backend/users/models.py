@@ -114,6 +114,12 @@ class Follow(models.Model):
         return f"Подписка пользователя {self.user} на автора {self.following}"
 
     def clean(self):
-        self.validate_unique()
-        self.validate_constraints()
+        self._check_constraints()
         return super(Follow, self).clean()
+
+    def save(self, force_insert=False, force_update=False,
+             using=None, update_fields=None):
+        return super(Follow, self).save(force_insert,
+                                        force_update,
+                                        using,
+                                        update_fields)
