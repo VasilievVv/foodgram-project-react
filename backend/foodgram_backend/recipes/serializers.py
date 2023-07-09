@@ -141,15 +141,15 @@ class RecipeCreateSerializer(serializers.ModelSerializer):
         return value
 
     def validate_cooking_time(self, value):
-        if (MIN_VALUE_AMOUNT_AND_COOKING_TIME
-                <
-                value
-                >
-                MAX_VALUE_COOKING_TIME):
+        if value < MIN_VALUE_AMOUNT_AND_COOKING_TIME:
             raise serializers.ValidationError(
-                f'Введите значение от {MIN_VALUE_AMOUNT_AND_COOKING_TIME}'
-                f'до {MAX_VALUE_COOKING_TIME}'
+                'Введите значение больше 0'
             )
+        elif value > MAX_VALUE_COOKING_TIME:
+            raise serializers.ValidationError(
+                'Введите значение меньше 300'
+            )
+
         return value
 
     def create(self, validated_data):
