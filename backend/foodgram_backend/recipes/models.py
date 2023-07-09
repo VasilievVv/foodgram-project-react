@@ -1,5 +1,4 @@
 from colorfield.fields import ColorField
-from django.core.exceptions import ValidationError
 
 from django.core.validators import (MinValueValidator,
                                     MaxValueValidator,
@@ -50,13 +49,9 @@ class Tag(models.Model):
     def save(self, force_insert=False, force_update=False,
              using=None, update_fields=None):
         self.color = self.color.upper()
-        try:
-            self.validate_unique()
-            return super(Tag, self).save(force_insert,
-                                         force_update,
-                                         using, update_fields)
-        except ValidationError as e:
-            raise ValidationError('Error: ', e)
+        return super(Tag, self).save(force_insert,
+                                     force_update,
+                                     using, update_fields)
 
     def clean(self):
         self.validate_unique()
