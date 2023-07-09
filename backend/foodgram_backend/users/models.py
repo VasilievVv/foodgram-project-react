@@ -1,3 +1,4 @@
+from django.core.exceptions import ValidationError
 from django.db import models
 from django.contrib.auth.models import AbstractUser, UserManager
 
@@ -114,12 +115,13 @@ class Follow(models.Model):
         return f"Подписка пользователя {self.user} на автора {self.following}"
 
     def clean(self):
-        self._check_constraints()
+        if self.following == self.user:
+            raise ValidationError('Подписка на себя не возможна!')
         return super(Follow, self).clean()
 
-    def save(self, force_insert=False, force_update=False,
-             using=None, update_fields=None):
-        return super(Follow, self).save(force_insert,
-                                        force_update,
-                                        using,
-                                        update_fields)
+    # def save(self, force_insert=False, force_update=False,
+    #          using=None, update_fields=None):
+    #     return super(Follow, self).save(force_insert,
+    #                                     force_update,
+    #                                     using,
+    #                                     update_fields)
