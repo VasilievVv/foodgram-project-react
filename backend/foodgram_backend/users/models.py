@@ -114,16 +114,7 @@ class Follow(models.Model):
     def __str__(self):
         return f"Подписка пользователя {self.user} на автора {self.following}"
 
-    def save(self, force_insert=False, force_update=False,
-             using=None, update_fields=None):
-        try:
-            self.validate_unique()
-            return super(Follow, self).save(force_insert,
-                                            force_update,
-                                            using, update_fields)
-        except ValidationError as e:
-            raise ValidationError('Error: ', e)
-
     def clean(self):
+        self.validate_unique()
         self.validate_constraints()
         return super(Follow, self).clean()
